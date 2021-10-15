@@ -162,6 +162,24 @@ class OrderProcessingClientTest extends TestCase
         $this->getBuyer($jsonObj, $buyer);
     }
 
+    public function testCancelByClient()
+    {
+        $response = new Response(200, []);
+
+        $mock = $this->getMockBuilder(OrderProcessingClient::class)
+            ->setMethods(['sendRequest'])
+            ->getMock();
+
+        $mock->expects($this->any())
+            ->method('sendRequest')
+            ->will($this->returnValue($response));
+
+        /** @var \Psr\Http\Message\ResponseInterface $buyerRes */
+        $cancellationResponse = $mock->cancellationAccept(self::CAMPAIGN_ID, self::ORDER_ID, ['accept' => true]);
+
+        $this->assertEquals($cancellationResponse->getStatusCode(), 200);
+    }
+
     /**
      * @param $jsonObj
      * @param OrderInfo $order

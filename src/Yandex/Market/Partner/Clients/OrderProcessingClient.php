@@ -168,4 +168,34 @@ class OrderProcessingClient extends Client
 
         return new GetBuyerResponse($decodedResponseBody);
     }
+
+    /**
+     * Accept or decline customer order cancellation
+     *
+     * @see https://yandex.ru/dev/market/partner-dsbs/doc/dg/reference/put-campaigns-id-orders-id-cancellation-accept.html
+     *
+     * @param $campaignId
+     * @param $orderId
+     * @param array $params
+     * @param null $dbgKey
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws ForbiddenException
+     * @throws GuzzleException
+     * @throws PartnerRequestException
+     * @throws UnauthorizedException
+     */
+    public function cancellationAccept($campaignId, $orderId, array $params = [], $dbgKey = null)
+    {
+        $resource = 'campaigns/' . $campaignId . '/orders/' . $orderId . '/cancellation/accept.json';
+        $resource = $this->addDebugKey($resource, $dbgKey);
+        $response = $this->sendRequest(
+            'PUT',
+            $this->getServiceUrl($resource),
+            ['json' => $params]
+        );
+
+        return new $response;
+    }
 }
